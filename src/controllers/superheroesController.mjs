@@ -37,12 +37,12 @@ export async function obtenerSuperheroePorIdController(req, res) {
 export async function obtenerTodosLosSuperheroesController(req, res) {
   try {
     const superheroes = await obtenerTodosLosSuperheroes();
+    const formateados = renderizarListasSuperheroes(superheroes);
 
-    const superheroesFormateados = renderizarListasSuperheroes(superheroes);
-    res.status(200).json(superheroesFormateados);
+    res.render('dashboard', { superheroes: formateados });
   } catch (error) {
     res.status(500).send({
-      mensaje: 'Error al obtener los superheroes',
+      mensaje: 'Error al cargar el dashboard',
       error: error.message,
     });
   }
@@ -107,7 +107,10 @@ export async function actualizarSuperheroeController(req, res) {
 
     res.status(200).json(renderizarSuperheroe(actualizado));
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al actualizar el superhéroe', error: error.message });
+    res.status(500).json({
+      mensaje: 'Error al actualizar el superhéroe',
+      error: error.message,
+    });
   }
 }
 
@@ -124,7 +127,7 @@ export async function eliminarSuperheroeController(req, res) {
   } catch (error) {
     res.status(500).json({
       mensaje: 'Error al eliminar el superhéroe',
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -142,10 +145,9 @@ export async function eliminarSuperheroePorNombreController(req, res) {
   } catch (error) {
     res.status(500).json({
       mensaje: 'Error al eliminar el superhéroe por nombre',
-      error: error.message
+      error: error.message,
     });
   }
 }
-
 
 // La capa de controladores gestiona las solicitudes del cliente y llama a la capa de servicios para realizar las operaciones necesarias. Al usar funciones específicas para cada endpoint, el controlador actúa como intermediario, facilitando la separación de responsabilidades y mejorando la organización del código.
