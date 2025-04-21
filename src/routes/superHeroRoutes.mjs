@@ -6,27 +6,36 @@ import {
   obtenerTodosLosSuperheroesController,
   buscarSuperheroesPorAtributoController,
   obtenerSuperheroesMayoresDe30Controller,
-  crearSuperheroeController,
-  actualizarSuperheroeController,
+  agregarSuperheroeController,
   eliminarSuperheroeController,
   eliminarSuperheroePorNombreController,
+  renderizarEditarSuperheroeController,
+  editarSuperheroeController,
 } from '../controllers/superheroesController.mjs';
 
 const router = express.Router();
-
+// 🧠 Primero las rutas fijas
 router.get('/', (req, res) => {
   res.render('home', { mensaje: '¡Todo listo para usar EJS!' });
 });
-
-router.get('/heroes/mayores-30', obtenerSuperheroesMayoresDe30Controller); //'/heroes/buscar/mayores-30' si este endpoint se ubica luego de otros
 router.get('/heroes', obtenerTodosLosSuperheroesController);
+router.get('/heroes/agregar', (req, res) => {
+  res.render('addSuperhero');
+});
+router.post('/heroes/agregar', agregarSuperheroeController);
+
+// ✅ Luego las rutas dinámicas
+// — ¡ahora edición!:
+router.get('/heroes/:id/editar', renderizarEditarSuperheroeController);
+router.post('/heroes/:id/editar', editarSuperheroeController);
+
 router.get('/heroes/:id', obtenerSuperheroePorIdController);
 router.get(
   '/heroes/buscar/:atributo/:valor',
   buscarSuperheroesPorAtributoController
 );
-router.post('/heroes', crearSuperheroeController);
-router.put('/heroes/:id', actualizarSuperheroeController);
+router.get('/heroes/mayores-30', obtenerSuperheroesMayoresDe30Controller); //'/heroes/buscar/mayores-30' si este endpoint se ubica luego de otros
+
 router.delete('/heroes/:id', eliminarSuperheroeController);
 router.delete('/heroes/nombre/:nombre', eliminarSuperheroePorNombreController);
 

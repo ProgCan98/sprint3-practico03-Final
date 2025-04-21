@@ -6,7 +6,7 @@ import {
   buscarSuperheroesPorAtributo,
   obtenerSuperheroesMayoresDe30,
   crearSuperheroe,
-  actualizarSuperheroe,
+  actualizarSuperheroe as actualizarService,
   eliminarSuperheroe,
   eliminarSuperheroePorNombre,
 } from '../services/superheroesService.mjs';
@@ -85,52 +85,191 @@ export async function obtenerSuperheroesMayoresDe30Controller(req, res) {
   }
 }
 
-export async function crearSuperheroeController(req, res) {
+// export async function crearSuperheroeController(req, res) {
+//   try {
+//     const nuevoSuperheroe = await crearSuperheroe(req.body);
+//     res.status(201).json(renderizarSuperheroe(nuevoSuperheroe));
+//   } catch (error) {
+//     res.status(400).json({ mensaje: 'Error al crear el superhéroe', error });
+//   }
+// }
+
+export async function agregarSuperheroeController(req, res) {
   try {
-    const nuevoSuperheroe = await crearSuperheroe(req.body);
-    res.status(201).json(renderizarSuperheroe(nuevoSuperheroe));
+    const {
+      nombreSuperHeroe,
+      nombreReal,
+      edad,
+      planetaOrigen,
+      debilidad,
+      poderes,
+      aliados,
+      enemigos,
+      creador,
+    } = req.body;
+
+    // 🧼 Validación y limpieza frontend -> backend
+    if (
+      !nombreSuperHeroe ||
+      nombreSuperHeroe.trim().length < 3 ||
+      nombreSuperHeroe.trim().length > 60
+    ) {
+      return res.status(400).send('Nombre del superhéroe inválido');
+    }
+
+    if (
+      !nombreReal ||
+      nombreReal.trim().length < 3 ||
+      nombreReal.trim().length > 60
+    ) {
+      return res.status(400).send('Nombre real inválido');
+    }
+
+    if (!edad || isNaN(edad) || edad < 0) {
+      return res.status(400).send('Edad inválida');
+    }
+
+    const nuevoSuperheroe = {
+      nombreSuperHeroe: nombreSuperHeroe.trim(),
+      nombreReal: nombreReal.trim(),
+      edad: Number(edad),
+      planetaOrigen: planetaOrigen?.trim() || '',
+      debilidad: debilidad?.trim() || '',
+      poderes: poderes
+        ?.split(',')
+        .map((p) => p.trim())
+        .filter((p) => p.length >= 3 && p.length <= 60),
+      aliados: aliados
+        ?.split(',')
+        .map((a) => a.trim())
+        .filter((a) => a.length > 0),
+      enemigos: enemigos
+        ?.split(',')
+        .map((e) => e.trim())
+        .filter((e) => e.length > 0),
+      creador: creador?.trim() || '',
+    };
+
+    const creado = await crearSuperheroe(nuevoSuperheroe);
+
+    // Redirigir al dashboard tras guardar correctamente
+    res.redirect('/api/heroes');
   } catch (error) {
-    res.status(400).json({ mensaje: 'Error al crear el superhéroe', error });
+    res.status(500).send(`Error al crear el superhéroe: ${error.message}`);
   }
 }
 
-export async function actualizarSuperheroeController(req, res) {
+// — GET: renderizar el formulario de edición con datos precargados
+export async function renderizarEditarSuperheroeController(req, res) {
   try {
     const { id } = req.params;
-    const datos = req.body;
-
-    const actualizado = await actualizarSuperheroe(id, datos);
-
-    if (!actualizado) {
-      return res.status(404).json({ mensaje: 'Superhéroe no encontrado' });
-    }
-
-    res.status(200).json(renderizarSuperheroe(actualizado));
+    const heroe = await obtenerSuperheroePorId(id);
+    if (!heroe) return res.status(404).send('Superhéroe no encontrado');
+    res.render('editSuperhero', { superheroe: heroe });
   } catch (error) {
-    res.status(500).json({
-      mensaje: 'Error al actualizar el superhéroe',
-      error: error.message,
-    });
+    res.status(500).send('Error al cargar formulario de edición');
+  }
+}
+
+// — PUT/POST: procesar la edición
+export async function editarSuperheroeController(req, res) {
+  const { id } = req.params;
+  const {
+    nombreSuperHeroe,
+    nombreReal,
+    edad,
+    planetaOrigen,
+    debilidad,
+    poderes,
+    aliados,
+    enemigos,
+    creador,
+  } = req.body;
+
+  // Validaciones básicas
+  if (
+    !nombreSuperHeroe?.trim() ||
+    nombreSuperHeroe.trim().length < 3 ||
+    nombreSuperHeroe.trim().length > 60
+  )
+    return res.status(400).send('Nombre inválido');
+  if (
+    !nombreReal?.trim() ||
+    nombreReal.trim().length < 3 ||
+    nombreReal.trim().length > 60
+  )
+    return res.status(400).send('Nombre real inválido');
+  if (isNaN(edad) || edad < 0) return res.status(400).send('Edad inválida');
+
+  const datos = {
+    nombreSuperHeroe: nombreSuperHeroe.trim(),
+    nombreReal: nombreReal.trim(),
+    edad: Number(edad),
+    planetaOrigen: planetaOrigen?.trim() || '',
+    debilidad: debilidad?.trim() || '',
+    poderes: poderes?.split(',').map((p) => p.trim()),
+    aliados: aliados?.split(',').map((a) => a.trim()),
+    enemigos: enemigos?.split(',').map((e) => e.trim()),
+    creador: creador?.trim() || '',
+  };
+
+  try {
+    await actualizarService(id, datos);
+    res.redirect(`/api/heroes`);
+  } catch (error) {
+    res.status(500).send('Error al actualizar superhéroe');
   }
 }
 
 export async function eliminarSuperheroeController(req, res) {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const superheroeEliminado = await eliminarSuperheroe(id);
-
-    if (!superheroeEliminado) {
-      return res.status(404).json({ mensaje: 'Superhéroe no encontrado' });
+    const eliminado = await eliminarSuperheroe(id);
+    if (!eliminado) {
+      return res.status(404).send('Superhéroe no encontrado');
     }
-
-    res.status(200).json(renderizarSuperheroe(superheroeEliminado));
+    res.redirect('/api/heroes');
   } catch (error) {
-    res.status(500).json({
-      mensaje: 'Error al eliminar el superhéroe',
-      error: error.message,
-    });
+    res.status(500).send(`Error al eliminar superhéroe: ${error.message}`);
   }
 }
+// export async function actualizarSuperheroeController(req, res) {
+//   try {
+//     const { id } = req.params;
+//     const datos = req.body;
+
+//     const actualizado = await actualizarSuperheroe(id, datos);
+
+//     if (!actualizado) {
+//       return res.status(404).json({ mensaje: 'Superhéroe no encontrado' });
+//     }
+
+//     res.status(200).json(renderizarSuperheroe(actualizado));
+//   } catch (error) {
+//     res.status(500).json({
+//       mensaje: 'Error al actualizar el superhéroe',
+//       error: error.message,
+//     });
+//   }
+// }
+
+// export async function eliminarSuperheroeController(req, res) {
+//   try {
+//     const { id } = req.params;
+//     const superheroeEliminado = await eliminarSuperheroe(id);
+
+//     if (!superheroeEliminado) {
+//       return res.status(404).json({ mensaje: 'Superhéroe no encontrado' });
+//     }
+
+//     res.status(200).json(renderizarSuperheroe(superheroeEliminado));
+//   } catch (error) {
+//     res.status(500).json({
+//       mensaje: 'Error al eliminar el superhéroe',
+//       error: error.message,
+//     });
+//   }
+// }
 
 export async function eliminarSuperheroePorNombreController(req, res) {
   try {

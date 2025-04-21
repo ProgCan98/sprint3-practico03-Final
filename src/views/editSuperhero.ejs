@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Editar Superhéroe</title>
+    <style>
+      /* Estilo básico */
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+      }
+      form {
+        max-width: 600px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      label {
+        font-weight: bold;
+      }
+      input,
+      textarea {
+        padding: 8px;
+        font-size: 14px;
+      }
+      button {
+        padding: 10px;
+        background-color: #2b87ff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #155ab4;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🦸‍♀️ Editar Superhéroe</h1>
+    <form action="/api/heroes/<%= superheroe._id %>/editar" method="POST">
+      <label for="nombreSuperHeroe">Nombre del Superhéroe *</label>
+      <input
+        type="text"
+        name="nombreSuperHeroe"
+        id="nombreSuperHeroe"
+        required
+        minlength="3"
+        maxlength="60"
+        value="<%= superheroe.nombreSuperHeroe %>"
+      />
+
+      <label for="nombreReal">Nombre Real *</label>
+      <input
+        type="text"
+        name="nombreReal"
+        id="nombreReal"
+        required
+        minlength="3"
+        maxlength="60"
+        value="<%= superheroe.nombreReal %>"
+      />
+
+      <label for="edad">Edad *</label>
+      <input
+        type="number"
+        name="edad"
+        id="edad"
+        required
+        min="0"
+        value="<%= superheroe.edad %>"
+      />
+
+      <label for="planetaOrigen">Planeta de Origen</label>
+      <input
+        type="text"
+        name="planetaOrigen"
+        id="planetaOrigen"
+        value="<%= superheroe.planetaOrigen %>"
+      />
+
+      <label for="debilidad">Debilidad</label>
+      <input
+        type="text"
+        name="debilidad"
+        id="debilidad"
+        value="<%= superheroe.debilidad %>"
+      />
+
+      <label for="poderes">Poderes (separados por coma)</label>
+      <input
+        type="text"
+        name="poderes"
+        id="poderes"
+        value="<%= superheroe.poderes.join(', ') %>"
+      />
+
+      <label for="aliados">Aliados (separados por coma)</label>
+      <input
+        type="text"
+        name="aliados"
+        id="aliados"
+        value="<%= superheroe.aliados.join(', ') %>"
+      />
+
+      <label for="enemigos">Enemigos (separados por coma)</label>
+      <input
+        type="text"
+        name="enemigos"
+        id="enemigos"
+        value="<%= superheroe.enemigos.join(', ') %>"
+      />
+
+      <label for="creador">Creador</label>
+      <input
+        type="text"
+        name="creador"
+        id="creador"
+        value="<%= superheroe.creador %>"
+      />
+
+      <button type="submit">Guardar Cambios</button>
+    </form>
+  </body>
+</html>

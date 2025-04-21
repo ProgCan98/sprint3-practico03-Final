@@ -48,6 +48,23 @@
           <td><%= h.Edad %></td>
           <td><%= h['planeta de Origen'] %></td>
           <td><%= h.Poderes.join(', ') %></td>
+
+          <td>
+            <a href="/api/heroes/<%= h._id %>/editar">
+              <button>Editar</button>
+            </a>
+          </td>
+          <td>
+            <form
+              action="/api/heroes/<%= h._id %>?_method=DELETE"
+              method="POST"
+              onsubmit="return confirm('¿Seguro que querés eliminar este superhéroe?');"
+            >
+              <button type="submit" style="background-color: red; color: white">
+                Eliminar
+              </button>
+            </form>
+          </td>
         </tr>
         <% }); %>
       </tbody>

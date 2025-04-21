@@ -5,6 +5,7 @@ import { createServer } from 'node:http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import superHeroRoutes from './routes/superHeroRoutes.mjs';
+import methodOverride from 'method-override';
 
 const app = express();
 const server = createServer(app);
@@ -22,6 +23,7 @@ app.set('views', path.join(__dirname, 'views')); // Ruta de las vistas
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public'))); // Para archivos estáticos (CSS/JS)
+app.use(methodOverride('_method'));
 
 // Conexion mongodb
 connectDB();
