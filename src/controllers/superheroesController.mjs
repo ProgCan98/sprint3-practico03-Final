@@ -149,7 +149,20 @@ export async function agregarSuperheroeController(req, res) {
         .filter((e) => e.length > 0),
       creador: creador?.trim() || '',
     };
+    //------------- validacion ---------------//
+    const poderesArray = poderes?.split(',').map((p) => p.trim());
 
+    if (!poderesArray || poderesArray.length < 2) {
+      return res.status(400).send('Debe ingresar al menos dos poderes.');
+    }
+
+    // Validar que cada poder tenga al menos 3 caracteres
+    const poderesValidos = poderesArray.every((p) => p.length >= 3);
+
+    if (!poderesValidos) {
+      return res.status(400).send('Cada poder debe tener mínimo 3 caracteres.');
+    }
+    // -----------------------------------------------  //
     const creado = await crearSuperheroe(nuevoSuperheroe);
 
     // Redirigir al dashboard tras guardar correctamente

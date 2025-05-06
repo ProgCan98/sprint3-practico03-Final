@@ -85,9 +85,10 @@
       <input
         type="text"
         name="poderes"
+        id="poderes"
         required
-        pattern=".{3,}"
-        title="Debe contener al menos un poder válido"
+        pattern="([^,]+,\s*){1,}[^,]+"
+        title="Ingresá al menos dos poderes separados por coma."
       />
 
       <label for="aliados">Aliados (separados por coma)</label>
