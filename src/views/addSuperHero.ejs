@@ -33,16 +33,30 @@
       button:hover {
         background-color: #155ab4;
       }
+      .errores {
+        color: red;
+        list-style: none;
+        padding: 0;
+      }
     </style>
   </head>
   <body>
     <h1>🦸‍♀️ Agregar un nuevo superhéroe</h1>
+
+    <% if (errores && errores.length > 0) { %>
+      <ul class="errores">
+        <% errores.forEach(error => { %>
+          <li><%= error %></li>
+        <% }) %>
+      </ul>
+    <% } %>
 
     <form action="/api/heroes/agregar" method="POST">
       <label for="nombreSuperHeroe">Nombre del Superhéroe *</label>
       <input
         type="text"
         name="nombreSuperHeroe"
+        value="<%= superheroe?.nombreSuperHeroe || '' %>"
         required
         minlength="3"
         maxlength="60"
@@ -53,6 +67,7 @@
       <input
         type="text"
         name="nombreReal"
+        value="<%= superheroe?.nombreReal || '' %>"
         required
         minlength="3"
         maxlength="60"
@@ -60,45 +75,75 @@
       />
 
       <label for="edad">Edad *</label>
-      <input type="number" name="edad" required min="0" />
+      <input
+        type="number"
+        name="edad"
+        value="<%= superheroe?.edad || '' %>"
+        required
+        min="0"
+      />
 
-      <!-- Planeta de Origen -->
       <label for="planetaOrigen">Planeta de Origen</label>
       <input
         type="text"
         name="planetaOrigen"
         id="planetaOrigen"
+        value="<%= superheroe?.planetaOrigen || '' %>"
+        required
         minlength="2"
         maxlength="60"
       />
 
-      <!-- Debilidad -->
       <label for="debilidad">Debilidad</label>
       <input
         type="text"
         name="debilidad"
         id="debilidad"
+        value="<%= superheroe?.debilidad || '' %>"
+        required
         minlength="3"
         maxlength="60"
       />
+
       <label for="poderes">Poderes (separados por coma) *</label>
       <input
         type="text"
         name="poderes"
         id="poderes"
+        value="<%= superheroe?.poderes || '' %>"
         required
-        pattern="([^,]+,\s*){1,}[^,]+"
         title="Ingresá al menos dos poderes separados por coma."
       />
 
       <label for="aliados">Aliados (separados por coma)</label>
-      <input type="text" name="aliados" minlength="2" maxlength="60" />
+      <input
+        type="text"
+        name="aliados"
+        value="<%= superheroe?.aliados || '' %>"
+        required
+        minlength="2"
+        maxlength="60"
+      />
 
       <label for="enemigos">Enemigos (separados por coma)</label>
-      <input type="text" name="enemigos" minlength="2" maxlength="60" />
+      <input
+        type="text"
+        name="enemigos"
+        value="<%= superheroe?.enemigos || '' %>"
+        required
+        minlength="2"
+        maxlength="60"
+      />
 
       <label for="creador">Creador</label>
-      <input type="text" name="creador" minlength="2" maxlength="60" />
+      <input
+        type="text"
+        name="creador"
+        value="<%= superheroe?.creador || '' %>"
+        required
+        minlength="2"
+        maxlength="60"
+      />
 
       <button type="submit">Agregar Superhéroe</button>
     </form>
