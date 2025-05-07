@@ -44,11 +44,11 @@
     <h1>🦸‍♀️ Agregar un nuevo superhéroe</h1>
 
     <% if (errores && errores.length > 0) { %>
-      <ul class="errores">
-        <% errores.forEach(error => { %>
-          <li><%= error %></li>
-        <% }) %>
-      </ul>
+    <ul class="errores">
+      <% errores.forEach(error => { %>
+      <li><%= error %></li>
+      <% }) %>
+    </ul>
     <% } %>
 
     <form action="/api/heroes/agregar" method="POST">
@@ -90,7 +90,7 @@
         id="planetaOrigen"
         value="<%= superheroe?.planetaOrigen || '' %>"
         required
-        minlength="2"
+        minlength="3"
         maxlength="60"
       />
 
@@ -121,7 +121,7 @@
         name="aliados"
         value="<%= superheroe?.aliados || '' %>"
         required
-        minlength="2"
+        minlength="3"
         maxlength="60"
       />
 
@@ -131,7 +131,7 @@
         name="enemigos"
         value="<%= superheroe?.enemigos || '' %>"
         required
-        minlength="2"
+        minlength="3"
         maxlength="60"
       />
 
@@ -141,7 +141,7 @@
         name="creador"
         value="<%= superheroe?.creador || '' %>"
         required
-        minlength="2"
+        minlength="3"
         maxlength="60"
       />
 

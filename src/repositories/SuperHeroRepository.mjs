@@ -25,6 +25,7 @@ class SuperHeroRepository extends IRepository {
   async actualizarPorId(id, datosActualizados) {
     return await SuperHero.findByIdAndUpdate(id, datosActualizados, {
       new: true,
+      runValidators: true,
     });
   }
   async eliminarPorId(id) {

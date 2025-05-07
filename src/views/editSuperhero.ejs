@@ -38,7 +38,14 @@
   </head>
   <body>
     <h1>🦸‍♀️ Editar Superhéroe</h1>
-    <form action="/api/heroes/<%= superheroe._id %>/editar" method="POST">
+    <% if (errores && errores.length > 0) { %>
+    <ul style="color: red; list-style: disc; padding-left: 20px">
+      <% errores.forEach(error => { %>
+      <li><%= error %></li>
+      <% }) %>
+    </ul>
+    <% } %>
+    <form action="/api//heroes/<%= superheroe._id %>/editar" method="POST">
       <label for="nombreSuperHeroe">Nombre del Superhéroe *</label>
       <input
         type="text"
@@ -92,7 +99,7 @@
         type="text"
         name="poderes"
         id="poderes"
-        value="<%= superheroe.poderes.join(', ') %>"
+        value="<%= Array.isArray(superheroe.poderes) ? superheroe.poderes.join(', ') : superheroe.poderes || '' %>"
       />
 
       <label for="aliados">Aliados (separados por coma)</label>
@@ -100,7 +107,7 @@
         type="text"
         name="aliados"
         id="aliados"
-        value="<%= superheroe.aliados.join(', ') %>"
+        value="<%= Array.isArray(superheroe.aliados) ? superheroe.aliados.join(', ') : superheroe.aliados || '' %>"
       />
 
       <label for="enemigos">Enemigos (separados por coma)</label>
@@ -108,7 +115,7 @@
         type="text"
         name="enemigos"
         id="enemigos"
-        value="<%= superheroe.enemigos.join(', ') %>"
+        value="<%= Array.isArray(superheroe.enemigos) ? superheroe.enemigos.join(', ') : superheroe.enemigos || '' %>"
       />
 
       <label for="creador">Creador</label>

@@ -52,7 +52,9 @@ export async function buscarSuperheroesPorAtributoController(req, res) {
     const { atributo, valor } = req.params;
     const superheroes = await buscarSuperheroesPorAtributo(atributo, valor);
     if (superheroes.length === 0) {
-      return res.status(404).send({ mensaje: 'No se encontraron coincidencias' });
+      return res
+        .status(404)
+        .send({ mensaje: 'No se encontraron coincidencias' });
     }
 
     const superheroesFormateados = renderizarListasSuperheroes(superheroes);
@@ -84,7 +86,7 @@ export async function agregarSuperheroeController(req, res) {
     await crearSuperheroe(req.body);
     res.redirect('/api/heroes');
   } catch (error) {
-    res.status(500).send(`Error al crear el superhéroe: ${error.message}`)
+    res.status(500).send(`Error al crear el superhéroe: ${error.message}`);
   }
 }
 
@@ -93,7 +95,10 @@ export async function renderizarEditarSuperheroeController(req, res) {
     const { id } = req.params;
     const heroe = await obtenerSuperheroePorId(id);
     if (!heroe) return res.status(404).send('Superhéroe no encontrado');
-    res.render('editSuperhero', { superheroe: heroe });
+    res.render('editSuperhero', {
+      superheroe: heroe,
+      errores: [], // <== clave para que no explote el EJS
+    });
   } catch (error) {
     res.status(500).send('Error al cargar formulario de edición');
   }
